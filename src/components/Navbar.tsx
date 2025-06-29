@@ -14,18 +14,24 @@ export default function Navbar() {
     });
     const dispatch = useDispatch();
 
+    // here we define the type of form as the form event
     const handleSubmit = (e: React.FormEvent): void => {
         e.preventDefault();
         if(inputData.name.trim() !== ""){
-            dispatch(addTask(inputData.name.trim()));
-        };
+            dispatch(
+                addTask({
+                    name : inputData.name.trim(),
+                    tag: inputData.select || "Personal",
+                }));
+        };  
         setInputData({
             name : "",
             select : "",
         });
     };
 
-    const handleChange = (e) =>{
+    // here we define the type of changeEvent along with the two field one is the inputField and other is the select element field
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement| HTMLSelectElement>) =>{
         const {name, value} = e.target;
         setInputData((prev) => ({...prev, [name]: value }))
     }
