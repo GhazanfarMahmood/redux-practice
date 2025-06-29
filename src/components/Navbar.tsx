@@ -1,35 +1,52 @@
 "use client";
 
-import { addTask } from "@/features/tasks/taskSlice";
+import { addTask, updateTask } from "@/features/tasks/taskSlice";
 import Link from "next/link";
-import React, { useState } from "react";
+import React from "react";
 import { IoMdMoon } from "react-icons/io";
 import { IoSunny } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 
-export default function Navbar() {
-    const [inputData, setInputData] = useState({
-        name : "",
-        select : "",
-    });
+export default function Navbar({
+        inputData, setInputData, editingIndex, setEditingIndex
+    } : {
+        inputData : {name : string; select : string}; 
+        setInputData : React.Dispatch<React.SetStateAction<{name : string; select : string}>>;
+        editingIndex : number | null;
+        setEditingIndex : React.Dispatch<React.SetStateAction<number | null>>;
+    }) {
+
     const dispatch = useDispatch();
 
     // here we define the type of form as the form event
     const handleSubmit = (e: React.FormEvent): void => {
         e.preventDefault();
-        if(inputData.name.trim() !== ""){
-            dispatch(
-                addTask({
-                    name : inputData.name.trim(),
-                    tag: inputData.select || "Personal",
-                }));
-        };  
-        setInputData({
-            name : "",
-            select : "",
-        });
-    };
+        if (inputData.name.trim() !== "") {
+        const normalizedTag =
+            inputData.select.toLowerCase() === "work" ? "Work" : "Personal";
 
+        if (editingIndex !== null) {
+            dispatch(
+            updateTask({
+                index: editingIndex,
+                updatedTask: {
+                name: inputData.name.trim(),
+                tag: normalizedTag,
+                },
+            })
+            );
+            setEditingIndex(null);
+        } else {
+            dispatch(
+            addTask({
+                name: inputData.name.trim(),
+                tag: normalizedTag,
+            })
+            );
+        }
+        }
+        setInputData({ name: "", select: "personal" });
+    };
     // here we define the type of changeEvent along with the two field one is the inputField and other is the select element field
     const handleChange = (e: React.ChangeEvent<HTMLInputElement| HTMLSelectElement>) =>{
         const {name, value} = e.target;
@@ -56,8 +73,10 @@ export default function Navbar() {
                 </select>
                 <input type="text" placeholder="Search" value={inputData.name} name="name" onChange={handleChange} className="w-full pl-1.5 focus:outline-none" />
                 <button type="submit" 
-                className="w-[60px] h-[33px] flex-none bg-btn text-light rounded-[5px] cursor-pointer transition-all duration-300 ease-in-out hover:bg-btn-hover"
-                >Add</button>
+                className="h-[33px] flex-none bg-btn text-light rounded-[5px] px-[13px] cursor-pointer transition-all duration-300 ease-in-out hover:bg-btn-hover"
+                >
+                    {editingIndex !== null ? 'Update' : 'Add'}
+                </button>
             </form>
             <button 
                 className="w-[34px] h-[34px] flex items-center justify-center border-[1px] border-br rounded-[5px] cursor-pointer"

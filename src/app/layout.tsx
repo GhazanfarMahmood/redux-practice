@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import ReduxProvider from "./redux-provider";
 
 const roboto = Roboto({
@@ -26,9 +24,7 @@ export default function RootLayout({
         className={`${roboto.variable} antialiased`}
       >
         <ReduxProvider>
-          <Navbar />
             {children}
-          <Footer />
         </ReduxProvider>
       </body>
     </html>
