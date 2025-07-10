@@ -40,10 +40,16 @@
                 // }
                 console.log(action);
             },
-            updateTask: (state, action: PayloadAction<{ index: number, updatedTask : Task}>) =>{
-                // here's we only update the state array by just passing index and as the index match the data from payload go at the place of index in state array 
-                state.list[action.payload.index] = action.payload.updatedTask;
-                console.log(action.payload.index);
+             updateTask: (
+                state,
+                action: PayloadAction<{ index: number; updatedTask: Task }>
+                ) => {
+                const { index, updatedTask } = action.payload;
+                state.list[index] = { ...updatedTask, completed: state.list[index].completed };
+                },
+                toggleTaskStatus: (state, action: PayloadAction<number>) => {
+                const index = action.payload;
+                state.list[index].completed = !state.list[index].completed;
             },
             clearAll : (state) =>{
                 state.list = [];
@@ -51,5 +57,5 @@
         },
     });
 
-    export const {addTask, deleteTask, updateTask, clearAll} = taskSlice.actions;
+    export const {addTask, deleteTask, updateTask, toggleTaskStatus, clearAll} = taskSlice.actions;
     export default taskSlice.reducer;

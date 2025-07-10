@@ -3,7 +3,7 @@
 import Footer from "@/components/Footer";
 import MainContent from "@/components/MainContent";
 import Navbar from "@/components/Navbar";
-import Tabs from "@/components/Tabs";
+// import Tabs from "@/components/Tabs";
 import { RootState } from "@/constants/type";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -24,7 +24,6 @@ export default function Main() {
     {
       tasks.length > 0 ?
         <div className="min-h-[85vh] flex items-center flex-col justify-start">
-          <Tabs />
           <MainContent
             setInputData={setInputData}
             setEditingIndex={setEditingIndex}

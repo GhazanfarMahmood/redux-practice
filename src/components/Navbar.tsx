@@ -1,11 +1,10 @@
 "use client";
 
+import { RootState } from "@/constants/type";
 import { addTask, updateTask } from "@/features/tasks/taskSlice";
 import Link from "next/link";
 import React from "react";
-import { IoMdMoon } from "react-icons/io";
-import { IoSunny } from "react-icons/io5";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Navbar({
         inputData, setInputData, editingIndex, setEditingIndex
@@ -16,14 +15,16 @@ export default function Navbar({
         setEditingIndex : React.Dispatch<React.SetStateAction<number | null>>;
     }) {
 
+    const task = useSelector((state: RootState) => state.task.list);
     const dispatch = useDispatch();
 
     // here we define the type of form as the form event
     const handleSubmit = (e: React.FormEvent): void => {
         e.preventDefault();
-        if (inputData.name.trim() !== "") {
-        const normalizedTag =
-            inputData.select.toLowerCase() === "work" ? "Work" : "Personal";
+        if (inputData.name.trim() !== "" ) {
+            const normalizedTag = inputData.select.toLowerCase() === "work" ? "Work" : "Personal";
+            const isDuplicate = task.some((t) => t.name.toLocaleLowerCase() === inputData.name.trim().toLowerCase());
+
 
         if (editingIndex !== null) {
             dispatch(
@@ -37,6 +38,10 @@ export default function Navbar({
             );
             setEditingIndex(null);
         } else {
+            if(isDuplicate){
+                alert("task is already exist!");
+                return ;
+            }
             dispatch(
             addTask({
                 name: inputData.name.trim(),
@@ -78,12 +83,6 @@ export default function Navbar({
                     {editingIndex !== null ? 'Update' : 'Add'}
                 </button>
             </form>
-            <button 
-                className="w-[34px] h-[34px] flex items-center justify-center border-[1px] border-br rounded-[5px] cursor-pointer"
-            >
-                <IoSunny className="text-2xl" />
-                <IoMdMoon className="text-2xl hidden" />
-            </button>
         </div>
     </header>
 }
